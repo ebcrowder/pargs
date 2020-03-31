@@ -1,21 +1,40 @@
 // pargs
 // command line argument parser
+use std::collections::HashMap;
 use std::io::{Error, ErrorKind};
 
 #[cfg(test)]
 mod tests;
 
-#[derive(Debug)]
-pub struct Options<T> {
-    opts: Vec<T>,
+pub struct Response {
+    matches_hash_map: HashMap<String, i8>,
 }
 
-pub fn parse<T>(options: Vec<T>) -> Result<Options<T>, Error> {
-    let mut results = Options { opts: Vec::new() };
+/// parses arguments in relation to expected optional and required arguments
+pub fn parse(
+    actual_args: Vec<String>,
+    expected_optional_args: Vec<String>,
+    expected_required_args: Vec<String>,
+) -> Result<Response, Error> {
+    let mut matches = Response {
+        matches_hash_map: HashMap::new(),
+    };
 
-    for option in options {
-        results.opts.push(option);
+    // return Error if no required arguments are provided
+    if expected_required_args.len() < 1 {
+        return Err(Error::new(
+            ErrorKind::InvalidInput,
+            "please provide at least one required argument",
+        ));
     }
 
-    return Ok(results);
+    // iterate over actual arguments
+
+    for arg in actual_args {
+        if expected_required_args.contains(&arg) || expected_optional_args.contains(&arg) {
+            matches.matches_hash_map.insert(arg, 1);
+        }
+    }
+
+    Ok(matches)
 }
