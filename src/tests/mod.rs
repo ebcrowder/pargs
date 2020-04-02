@@ -1,5 +1,5 @@
 use super::parse;
-use std::collections::HashMap;
+use std::io::{Error, ErrorKind};
 
 #[test]
 fn parse_returns_result() {
@@ -23,4 +23,18 @@ fn parse_returns_result() {
         Ok(actual) => assert_eq!(actual, expected),
         _ => panic!(),
     }
+}
+
+#[test]
+fn parse_returns_error_if_reqd_args_missing() -> Result<(), Error> {
+    let args = vec![String::from("-h"), String::from("-o")];
+    let required_args = vec![String::from("filename")];
+    let optional_args = vec![String::from("-h"), String::from("-o")];
+
+    parse(args, required_args, optional_args);
+
+    Err(Error::new(
+        ErrorKind::InvalidInput,
+        "please provide at least one required argument",
+    ))
 }
