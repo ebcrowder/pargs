@@ -13,14 +13,14 @@ fn parse_returns_result() {
 
     let actual = parse(args, required_args, optional_args);
 
-    let hash_map_expected = HashMap::new();
-
-    hash_map_expected.insert("filename", 1);
-    hash_map_expected.insert("-h", 1);
-    hash_map_expected.insert("-o", 1);
+    let expected = vec![
+        String::from("filename"),
+        String::from("-h"),
+        String::from("-o"),
+    ];
 
     match actual {
-        Ok(actual) => assert_eq!(actual, hash_map_expected),
+        Ok(actual) => assert_eq!(actual, expected),
         _ => panic!(),
     }
 }
