@@ -8,8 +8,8 @@ mod tests;
 /// parses arguments in relation to expected optional and required arguments
 pub fn parse(
     actual_args: Vec<String>,
-    expected_optional_args: Vec<String>,
     expected_required_args: Vec<String>,
+    expected_optional_args: Vec<String>,
 ) -> Result<Vec<String>, Error> {
     let mut matches: Vec<String> = Vec::new();
 
@@ -19,6 +19,16 @@ pub fn parse(
             ErrorKind::InvalidInput,
             "please provide at least one required argument",
         ));
+    }
+
+    // check for required args and return error if not matches
+    for arg in &expected_required_args {
+        if !actual_args.contains(&arg) {
+            return Err(Error::new(
+                ErrorKind::InvalidInput,
+                "a required argument was not found",
+            ));
+        }
     }
 
     // iterate over actual arguments

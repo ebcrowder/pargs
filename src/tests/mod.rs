@@ -31,10 +31,13 @@ fn parse_returns_error_if_reqd_args_missing() -> Result<(), Error> {
     let required_args = vec![String::from("filename")];
     let optional_args = vec![String::from("-h"), String::from("-o")];
 
-    parse(args, required_args, optional_args);
+    let actual = parse(args, required_args, optional_args);
 
-    Err(Error::new(
-        ErrorKind::InvalidInput,
-        "please provide at least one required argument",
-    ))
+    match actual {
+        Err(actual) => Err(Error::new(
+            ErrorKind::InvalidInput,
+            "a required argument was not provided.",
+        )),
+        Ok(actual) => panic!(),
+    }
 }
