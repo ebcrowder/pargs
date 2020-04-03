@@ -1,5 +1,4 @@
 use super::parse;
-use std::io::{Error, ErrorKind};
 
 #[test]
 fn parse_returns_result() {
@@ -34,7 +33,21 @@ fn parse_returns_error_if_reqd_args_missing() {
     let actual = parse(args, required_args, optional_args);
 
     match actual {
-        Err(actual) => {}
+        Err(_actual) => {}
+        _ => panic!(),
+    }
+}
+
+#[test]
+fn parse_returns_error_if_reqd_args_not_defined() {
+    let args = vec![String::from("-h"), String::from("-o")];
+    let required_args = vec![];
+    let optional_args = vec![String::from("-h"), String::from("-o")];
+
+    let actual = parse(args, required_args, optional_args);
+
+    match actual {
+        Err(_actual) => {}
         _ => panic!(),
     }
 }

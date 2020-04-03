@@ -14,7 +14,7 @@ pub fn parse(
     let mut matches: Vec<String> = Vec::new();
 
     // return Error if no required arguments are provided
-    if expected_required_args.len() < 1 {
+    if expected_required_args.is_empty() {
         return Err(Error::new(
             ErrorKind::InvalidInput,
             "please provide at least one required argument",
@@ -32,7 +32,6 @@ pub fn parse(
     }
 
     // iterate over actual arguments
-
     for arg in actual_args {
         if expected_required_args.contains(&arg) || expected_optional_args.contains(&arg) {
             matches.push(arg);
