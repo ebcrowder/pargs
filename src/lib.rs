@@ -6,12 +6,12 @@ use std::io::{Error, ErrorKind};
 mod tests;
 
 /// parses arguments in relation to expected optional and required arguments
-pub fn parse(
-    actual_args: Vec<&str>,
+pub fn parse<'a>(
+    actual_args: Vec<&'a str>,
     required_args: Vec<&str>,
     optional_args: Vec<&str>,
-) -> Result<Vec<String>, Error> {
-    let mut matches: Vec<String> = Vec::new();
+) -> Result<Vec<&'a str>, Error> {
+    let mut matches: Vec<&str> = Vec::new();
 
     // return Error if no required arguments are provided
     if required_args.is_empty() {
@@ -34,7 +34,7 @@ pub fn parse(
     // iterate over actual arguments
     for arg in actual_args {
         if required_args.contains(&arg) || optional_args.contains(&arg) {
-            matches.push(arg.to_string());
+            matches.push(&arg);
         }
     }
 

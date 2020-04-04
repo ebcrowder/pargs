@@ -8,11 +8,7 @@ fn parse_returns_result() {
 
     let actual = parse(args, required_args, optional_args);
 
-    let expected = vec![
-        String::from("filename"),
-        String::from("-h"),
-        String::from("-o"),
-    ];
+    let expected = vec!["filename", "-h", "-o"];
 
     match actual {
         Ok(actual) => assert_eq!(actual, expected),
@@ -30,14 +26,7 @@ fn parse_returns_result_lots_of_args() {
 
     let actual = parse(args, required_args, optional_args);
 
-    let expected = vec![
-        String::from("filename"),
-        String::from("-p"),
-        String::from("-a"),
-        String::from("-r"),
-        String::from("-g"),
-        String::from("-s"),
-    ];
+    let expected = vec!["filename", "-p", "-a", "-r", "-g", "-s"];
 
     match actual {
         Ok(actual) => assert_eq!(actual, expected),
@@ -55,14 +44,7 @@ fn parse_only_returns_matching_args() {
 
     let actual = parse(args, required_args, optional_args);
 
-    let expected = vec![
-        String::from("filename"),
-        String::from("-p"),
-        String::from("-a"),
-        String::from("-r"),
-        String::from("-g"),
-        String::from("-s"),
-    ];
+    let expected = vec!["filename", "-p", "-a", "-r", "-g", "-s"];
 
     match actual {
         Ok(actual) => assert_eq!(actual, expected),
