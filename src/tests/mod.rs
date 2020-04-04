@@ -25,6 +25,85 @@ fn parse_returns_result() {
 }
 
 #[test]
+fn parse_returns_result_lots_of_args() {
+    let args = vec![
+        String::from("filename"),
+        String::from("-p"),
+        String::from("-a"),
+        String::from("-r"),
+        String::from("-g"),
+        String::from("-s"),
+    ];
+
+    let required_args = vec![String::from("filename")];
+
+    let optional_args = vec![
+        String::from("-p"),
+        String::from("-a"),
+        String::from("-r"),
+        String::from("-g"),
+        String::from("-s"),
+    ];
+
+    let actual = parse(args, required_args, optional_args);
+
+    let expected = vec![
+        String::from("filename"),
+        String::from("-p"),
+        String::from("-a"),
+        String::from("-r"),
+        String::from("-g"),
+        String::from("-s"),
+    ];
+
+    match actual {
+        Ok(actual) => assert_eq!(actual, expected),
+        _ => panic!(),
+    }
+}
+
+#[test]
+fn parse_only_returns_matching_args() {
+    let args = vec![
+        String::from("filename"),
+        String::from("-p"),
+        String::from("-a"),
+        String::from("-r"),
+        String::from("-g"),
+        String::from("-s"),
+        String::from("-v"),
+        String::from("-i"),
+        String::from("-m"),
+    ];
+
+    let required_args = vec![String::from("filename")];
+
+    let optional_args = vec![
+        String::from("-p"),
+        String::from("-a"),
+        String::from("-r"),
+        String::from("-g"),
+        String::from("-s"),
+    ];
+
+    let actual = parse(args, required_args, optional_args);
+
+    let expected = vec![
+        String::from("filename"),
+        String::from("-p"),
+        String::from("-a"),
+        String::from("-r"),
+        String::from("-g"),
+        String::from("-s"),
+    ];
+
+    match actual {
+        Ok(actual) => assert_eq!(actual, expected),
+        _ => panic!(),
+    }
+}
+
+#[test]
 fn parse_returns_error_if_reqd_args_missing() {
     let args = vec![String::from("-h"), String::from("-o")];
     let required_args = vec![String::from("filename")];
