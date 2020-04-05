@@ -35,6 +35,23 @@ pub fn parse(
 
     // iterate over actual_args and match them with each arg category
     for arg in actual_args {
+        // parse option_args into key value pairs
+        let str_vec: Vec<&str> = match arg.contains("=") {
+            true => arg.split("=").collect(),
+            false => vec![&arg],
+        };
+
+        let split_key: String = match str_vec.len() {
+            1 => "".to_string(),
+            _ => str_vec[0].to_string(),
+        };
+
+        let split_value: String = match str_vec.len() {
+            1 => "".to_string(),
+            _ => str_vec[1].to_string(),
+        };
+
+        // insert args into relative `HashMap` key
         if command_args.contains(&arg) {
             matches
                 .entry("command_args".to_string())
@@ -45,20 +62,16 @@ pub fn parse(
                 .entry("flag_args".to_string())
                 .or_insert(Vec::new())
                 .push(arg)
-        } else if option_args.contains(&arg) {
-            let str_vec: Vec<&str> = arg.split("=").collect();
-            let split_key = str_vec[0];
-            let split_value = str_vec[1];
+        } else if option_args.contains(&split_key) {
+            matches
+                .entry("option_args".to_string())
+                .or_insert(Vec::new())
+                .push(split_key);
 
             matches
                 .entry("option_args".to_string())
                 .or_insert(Vec::new())
-                .push(split_key.to_string());
-
-            matches
-                .entry("option_args".to_string())
-                .or_insert(Vec::new())
-                .push(split_value.to_string());
+                .push(split_value);
         }
     }
 

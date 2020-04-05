@@ -11,7 +11,7 @@ fn parse_returns_result() {
     ];
     let command_args = vec![String::from("pizza_command")];
     let flag_args = vec![String::from("-h")];
-    let option_args = vec![String::from("-i=peppers"), String::from("-j=mushrooms")];
+    let option_args = vec![String::from("-i"), String::from("-j")];
 
     let actual = parse(args, command_args, flag_args, option_args);
 
