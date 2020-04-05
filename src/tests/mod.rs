@@ -4,139 +4,48 @@ use std::collections::HashMap;
 #[test]
 fn parse_returns_result() {
     let args = vec![
-        String::from("filename"),
+        String::from("pizza_command"),
         String::from("-h"),
-        String::from("-o"),
+        String::from("-i=peppers"),
+        String::from("-j=mushrooms"),
     ];
-    let required_args = vec![String::from("filename")];
-    let optional_args = vec![String::from("-h"), String::from("-o")];
+    let command_args = vec![String::from("pizza_command")];
+    let flag_args = vec![String::from("-h")];
+    let option_args = vec![String::from("-i=peppers"), String::from("-j=mushrooms")];
 
-    let actual = parse(args, required_args, optional_args);
+    let actual = parse(args, command_args, flag_args, option_args);
 
     let mut expected: HashMap<String, Vec<String>> = HashMap::new();
 
-    expected.insert("required_args".to_string(), vec!["filename".to_string()]);
     expected.insert(
-        "optional_args".to_string(),
-        vec!["-h".to_string(), "-o".to_string()],
+        "command_args".to_string(),
+        vec!["pizza_command".to_string()],
     );
-
-    match actual {
-        Ok(actual) => assert_eq!(actual, expected),
-        _ => panic!(),
-    }
-}
-
-#[test]
-fn parse_returns_result_lots_of_args() {
-    let args = vec![
-        String::from("filename"),
-        String::from("-p"),
-        String::from("-a"),
-        String::from("-r"),
-        String::from("-g"),
-        String::from("-s"),
-    ];
-
-    let required_args = vec![String::from("filename")];
-
-    let optional_args = vec![
-        String::from("-p"),
-        String::from("-a"),
-        String::from("-r"),
-        String::from("-g"),
-        String::from("-s"),
-    ];
-
-    let actual = parse(args, required_args, optional_args);
-
-    let mut expected: HashMap<String, Vec<String>> = HashMap::new();
-
-    expected.insert("required_args".to_string(), vec!["filename".to_string()]);
+    expected.insert("flag_args".to_string(), vec!["-h".to_string()]);
     expected.insert(
-        "optional_args".to_string(),
+        "option_args".to_string(),
         vec![
-            "-p".to_string(),
-            "-a".to_string(),
-            "-r".to_string(),
-            "-g".to_string(),
-            "-s".to_string(),
+            "-i".to_string(),
+            "peppers".to_string(),
+            "-j".to_string(),
+            "mushrooms".to_string(),
         ],
     );
 
     match actual {
         Ok(actual) => assert_eq!(actual, expected),
-        _ => panic!(),
-    }
-}
-
-#[test]
-fn parse_only_returns_matching_args() {
-    let args = vec![
-        String::from("filename"),
-        String::from("-p"),
-        String::from("-a"),
-        String::from("-r"),
-        String::from("-g"),
-        String::from("-s"),
-        String::from("-v"),
-        String::from("-i"),
-        String::from("-m"),
-    ];
-
-    let required_args = vec![String::from("filename")];
-
-    let optional_args = vec![
-        String::from("-p"),
-        String::from("-a"),
-        String::from("-r"),
-        String::from("-g"),
-        String::from("-s"),
-    ];
-
-    let actual = parse(args, required_args, optional_args);
-
-    let mut expected: HashMap<String, Vec<String>> = HashMap::new();
-
-    expected.insert("required_args".to_string(), vec!["filename".to_string()]);
-    expected.insert(
-        "optional_args".to_string(),
-        vec![
-            "-p".to_string(),
-            "-a".to_string(),
-            "-r".to_string(),
-            "-g".to_string(),
-            "-s".to_string(),
-        ],
-    );
-
-    match actual {
-        Ok(actual) => assert_eq!(actual, expected),
-        _ => panic!(),
-    }
-}
-
-#[test]
-fn parse_returns_error_if_reqd_args_missing() {
-    let args = vec![String::from("-h"), String::from("-o")];
-    let required_args = vec![String::from("filename")];
-    let optional_args = vec![String::from("-h"), String::from("-o")];
-
-    let actual = parse(args, required_args, optional_args);
-
-    match actual {
-        Err(_actual) => {}
         _ => panic!(),
     }
 }
 
 #[test]
 fn parse_returns_error_if_reqd_args_not_defined() {
-    let args = vec![String::from("-h"), String::from("-o")];
-    let required_args = vec![];
-    let optional_args = vec![String::from("-h"), String::from("-o")];
+    let args = vec![];
+    let command_args = vec![String::from("filename")];
+    let flag_args = vec![String::from("-h")];
+    let option_args = vec![String::from("-j=hi"), String::from("-i=there")];
 
-    let actual = parse(args, required_args, optional_args);
+    let actual = parse(args, command_args, flag_args, option_args);
 
     match actual {
         Err(_actual) => {}

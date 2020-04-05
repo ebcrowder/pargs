@@ -1,5 +1,15 @@
-// pargs
-// command line argument parser
+/// # pargs
+/// ### command line argument parser
+
+/// pargs works with three common types of arguments:
+/// commands, flags and options
+
+/// using pargs is very simple:
+/// define all three types of arguments that your program needs
+/// and pass them as individual `Vec<String>` to `pargs::parse();`
+/// `parse()` will return a `HashMap` of the parsed arguments
+///  keyed by category so that your application can easily
+/// interpret them.
 use std::collections::HashMap;
 use std::io::{Error, ErrorKind};
 
@@ -9,41 +19,46 @@ mod tests;
 /// parses arguments in relation to expected optional and required arguments
 pub fn parse(
     actual_args: Vec<String>,
-    required_args: Vec<String>,
-    optional_args: Vec<String>,
+    command_args: Vec<String>,
+    flag_args: Vec<String>,
+    option_args: Vec<String>,
 ) -> Result<HashMap<String, Vec<String>>, Error> {
     let mut matches: HashMap<String, Vec<String>> = HashMap::new();
 
     // return Error if no required arguments are provided
-    if required_args.is_empty() {
+    if actual_args.is_empty() {
         return Err(Error::new(
             ErrorKind::InvalidInput,
-            "please provide at least one required argument",
+            "no arguments were provided.",
         ));
     }
 
-    // check for required args and return error if not matches
-    for arg in &required_args {
-        if !actual_args.contains(&arg) {
-            return Err(Error::new(
-                ErrorKind::InvalidInput,
-                "a required argument was not found",
-            ));
-        }
-    }
-
-    // iterate over actual arguments
+    // iterate over actual_args and match them with each arg category
     for arg in actual_args {
-        if required_args.contains(&arg) {
+        if command_args.contains(&arg) {
             matches
-                .entry("required_args".to_string())
+                .entry("command_args".to_string())
                 .or_insert(Vec::new())
                 .push(arg)
-        } else if optional_args.contains(&arg) {
+        } else if flag_args.contains(&arg) {
             matches
-                .entry("optional_args".to_string())
+                .entry("flag_args".to_string())
                 .or_insert(Vec::new())
                 .push(arg)
+        } else if option_args.contains(&arg) {
+            let str_vec: Vec<&str> = arg.split("=").collect();
+            let split_key = str_vec[0];
+            let split_value = str_vec[1];
+
+            matches
+                .entry("option_args".to_string())
+                .or_insert(Vec::new())
+                .push(split_key.to_string());
+
+            matches
+                .entry("option_args".to_string())
+                .or_insert(Vec::new())
+                .push(split_value.to_string());
         }
     }
 
