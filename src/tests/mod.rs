@@ -16,8 +16,10 @@ fn parse_returns_result() {
     let mut expected: HashMap<String, Vec<String>> = HashMap::new();
 
     expected.insert("required_args".to_string(), vec!["filename".to_string()]);
-    expected.insert("optional_args".to_string(), vec!["-h".to_string()]);
-    expected.insert("optional_args".to_string(), vec!["-o".to_string()]);
+    expected.insert(
+        "optional_args".to_string(),
+        vec!["-h".to_string(), "-o".to_string()],
+    );
 
     match actual {
         Ok(actual) => assert_eq!(actual, expected),
@@ -51,11 +53,16 @@ fn parse_returns_result_lots_of_args() {
     let mut expected: HashMap<String, Vec<String>> = HashMap::new();
 
     expected.insert("required_args".to_string(), vec!["filename".to_string()]);
-    expected.insert("optional_args".to_string(), vec!["-p".to_string()]);
-    expected.insert("optional_args".to_string(), vec!["-a".to_string()]);
-    expected.insert("optional_args".to_string(), vec!["-r".to_string()]);
-    expected.insert("optional_args".to_string(), vec!["-g".to_string()]);
-    expected.insert("optional_args".to_string(), vec!["-s".to_string()]);
+    expected.insert(
+        "optional_args".to_string(),
+        vec![
+            "-p".to_string(),
+            "-a".to_string(),
+            "-r".to_string(),
+            "-g".to_string(),
+            "-s".to_string(),
+        ],
+    );
 
     match actual {
         Ok(actual) => assert_eq!(actual, expected),
@@ -92,11 +99,16 @@ fn parse_only_returns_matching_args() {
     let mut expected: HashMap<String, Vec<String>> = HashMap::new();
 
     expected.insert("required_args".to_string(), vec!["filename".to_string()]);
-    expected.insert("optional_args".to_string(), vec!["-p".to_string()]);
-    expected.insert("optional_args".to_string(), vec!["-a".to_string()]);
-    expected.insert("optional_args".to_string(), vec!["-r".to_string()]);
-    expected.insert("optional_args".to_string(), vec!["-g".to_string()]);
-    expected.insert("optional_args".to_string(), vec!["-s".to_string()]);
+    expected.insert(
+        "optional_args".to_string(),
+        vec![
+            "-p".to_string(),
+            "-a".to_string(),
+            "-r".to_string(),
+            "-g".to_string(),
+            "-s".to_string(),
+        ],
+    );
 
     match actual {
         Ok(actual) => assert_eq!(actual, expected),
