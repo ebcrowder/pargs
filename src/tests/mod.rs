@@ -1,4 +1,5 @@
 use super::parse;
+use std::collections::HashMap;
 
 #[test]
 fn parse_returns_result() {
@@ -12,11 +13,11 @@ fn parse_returns_result() {
 
     let actual = parse(args, required_args, optional_args);
 
-    let expected = vec![
-        String::from("filename"),
-        String::from("-h"),
-        String::from("-o"),
-    ];
+    let mut expected: HashMap<String, Vec<String>> = HashMap::new();
+
+    expected.insert("required_args".to_string(), vec!["filename".to_string()]);
+    expected.insert("optional_args".to_string(), vec!["-h".to_string()]);
+    expected.insert("optional_args".to_string(), vec!["-o".to_string()]);
 
     match actual {
         Ok(actual) => assert_eq!(actual, expected),
@@ -47,14 +48,14 @@ fn parse_returns_result_lots_of_args() {
 
     let actual = parse(args, required_args, optional_args);
 
-    let expected = vec![
-        String::from("filename"),
-        String::from("-p"),
-        String::from("-a"),
-        String::from("-r"),
-        String::from("-g"),
-        String::from("-s"),
-    ];
+    let mut expected: HashMap<String, Vec<String>> = HashMap::new();
+
+    expected.insert("required_args".to_string(), vec!["filename".to_string()]);
+    expected.insert("optional_args".to_string(), vec!["-p".to_string()]);
+    expected.insert("optional_args".to_string(), vec!["-a".to_string()]);
+    expected.insert("optional_args".to_string(), vec!["-r".to_string()]);
+    expected.insert("optional_args".to_string(), vec!["-g".to_string()]);
+    expected.insert("optional_args".to_string(), vec!["-s".to_string()]);
 
     match actual {
         Ok(actual) => assert_eq!(actual, expected),
@@ -88,14 +89,14 @@ fn parse_only_returns_matching_args() {
 
     let actual = parse(args, required_args, optional_args);
 
-    let expected = vec![
-        String::from("filename"),
-        String::from("-p"),
-        String::from("-a"),
-        String::from("-r"),
-        String::from("-g"),
-        String::from("-s"),
-    ];
+    let mut expected: HashMap<String, Vec<String>> = HashMap::new();
+
+    expected.insert("required_args".to_string(), vec!["filename".to_string()]);
+    expected.insert("optional_args".to_string(), vec!["-p".to_string()]);
+    expected.insert("optional_args".to_string(), vec!["-a".to_string()]);
+    expected.insert("optional_args".to_string(), vec!["-r".to_string()]);
+    expected.insert("optional_args".to_string(), vec!["-g".to_string()]);
+    expected.insert("optional_args".to_string(), vec!["-s".to_string()]);
 
     match actual {
         Ok(actual) => assert_eq!(actual, expected),
