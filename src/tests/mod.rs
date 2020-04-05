@@ -41,9 +41,9 @@ fn parse_returns_result() {
 #[test]
 fn parse_returns_error_if_reqd_args_not_defined() {
     let args = vec![];
-    let command_args = vec![String::from("filename")];
+    let command_args = vec![String::from("pizza_command")];
     let flag_args = vec![String::from("-h")];
-    let option_args = vec![String::from("-j=hi"), String::from("-i=there")];
+    let option_args = vec![String::from("-i"), String::from("-j")];
 
     let actual = parse(args, command_args, flag_args, option_args);
 
