@@ -5,6 +5,9 @@ authors = ["Eric Crowder <ebcrowder@gmail.com>"]
 edition = "2018"
 description = "command line argument parser"
 license = "GPL-3.0"
+homepage = "https://github.com/ebcrowder/pargs"
+repository = "https://github.com/ebcrowder/pargs"
+documentation = "https://docs.rs/pargs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
