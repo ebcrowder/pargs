@@ -33,9 +33,12 @@ pub fn parse(
         ));
     }
 
+    // make a clone of actual_args vec for index lookup
+    let actual_args_ref = actual_args.clone();
+
     // iterate over actual_args and match them with each arg category
-    for arg in actual_args {
-        // parse option_args into key value pairs
+    for (i, arg) in actual_args.iter().enumerate() {
+        // parse option_args that use `=` into key value pairs
         let str_vec: Vec<&str> = match arg.contains("=") {
             true => arg.split("=").collect(),
             false => vec![&arg],
@@ -56,12 +59,12 @@ pub fn parse(
             matches
                 .entry("command_args".to_string())
                 .or_insert(Vec::new())
-                .push(arg)
+                .push(arg.to_string())
         } else if flag_args.contains(&arg) {
             matches
                 .entry("flag_args".to_string())
                 .or_insert(Vec::new())
-                .push(arg)
+                .push(arg.to_string())
         } else if option_args.contains(&split_key) {
             matches
                 .entry("option_args".to_string())
@@ -72,6 +75,16 @@ pub fn parse(
                 .entry("option_args".to_string())
                 .or_insert(Vec::new())
                 .push(split_value);
+        } else if option_args.contains(&arg) {
+            // parse option args that use a ` ` into key value pairs
+            matches
+                .entry("option_args".to_string())
+                .or_insert(Vec::new())
+                .push(arg.to_string());
+            matches
+                .entry("option_args".to_string())
+                .or_insert(Vec::new())
+                .push(actual_args_ref[i + 1].to_string());
         }
     }
 
