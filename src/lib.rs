@@ -1,5 +1,4 @@
-/*! # pargs
- ### command line argument parser
+/*! pargs - command line argument parser
 
  pargs works with three common types of arguments:
  commands, flags and options
@@ -13,13 +12,13 @@
  interpret them.
 
  # Definitions
- `command` args are defined as single arguments that do not have an assigned value
- `command` args should be entered without a dash
- `flag` args are intended to be boolean values
- `flag` args should not be assigned a value - if they exist, they are interpreted as `true`
- `option` args should be assigned a value
- `option` args should be denoted with a `-` character
- `option` args can be assigned a value via `=` or space between arg and value
+ `command_args` are defined as single arguments that do not have an assigned value
+ `command_args` args should be entered without a dash
+ `flag_args` are intended to be boolean values
+ `flag_args` should not be assigned a value - if they exist, they are interpreted as `true`
+ `option_args` should be assigned a value
+ `option_args` should be denoted with a `-` character
+ `option_args` can be assigned a value via `=` or space between arg and value
 
  # Example
 
@@ -28,8 +27,7 @@
  at which point it parses the arguments and returns them to the program in a `HashMap<String,
  Vec<String>>` data structure.
 
- ```{.rust}
-use pargs;
+ ```
  use std::env;
 
  fn main() {
@@ -45,11 +43,12 @@ use pargs;
         Err(parsed_args) => println!("{}", parsed_args),
     }
  }
-
  ```
 
- if we run this program with `cargo run cool_command -h -j=test123 -i=test456`,
- the output will be `{"flag_args": ["-h"], "command_args": ["cool_command"], "option_args": ["-j", "test123", "-i", "test456"]}`
+If we run this program with `cargo run cool_command -h -j=test123 -i=test456`,
+ the output will be `{"flag_args": ["-h"], "command_args": ["cool_command"], "option_args": ["-j", "test123", "-i", "test456"]}`.
+
+From here, we can lookup the values using `HashMap`'s methods and utilize them in our program.
 */
 
 use std::collections::HashMap;
