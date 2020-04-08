@@ -1,21 +1,62 @@
-/// # pargs
-/// ### command line argument parser
+/*! # pargs
+ ### command line argument parser
 
-/// pargs works with three common types of arguments:
-/// commands, flags and options
+ pargs works with three common types of arguments:
+ commands, flags and options
 
-/// using pargs is very simple:
-/// define all three types of arguments that your program needs
-/// and pass them as individual `Vec<String>` to `pargs::parse();`
-/// `parse()` will return a `HashMap` of the parsed arguments
-///  keyed by category so that your application can easily
-/// interpret them.
+ # Using pargs
+ using pargs is very simple:
+ define all three types of arguments that your program needs
+ and pass them as individual `Vec<String>` to `pargs::parse()`.
+ `parse()` will return a `HashMap` of the parsed arguments
+  keyed by category so that your application can easily
+ interpret them.
+
+ # Definitions
+ `command` args are defined as single arguments that do not have an assigned value
+ `command` args should be entered without a dash
+ `flag` args are intended to be boolean values
+ `flag` args should not be assigned a value - if they exist, they are interpreted as `true`
+ `option` args should be assigned a value
+ `option` args should be denoted with a `-` character
+ `option` args can be assigned a value via `=` or space between arg and value
+
+ # Example
+
+ The following example shows a simple program that defines all three types of arguments
+ (commands, flag and option). Pargs is passed a `Vec<String>` from `env::args()`
+ at which point it parses the arguments and returns them to the program in a `HashMap<String,
+ Vec<String>>` data structure.
+
+ ```{.rust}
+use pargs;
+ use std::env;
+
+ fn main() {
+    let actual_args: Vec<String> = env::args().collect();
+    let command_args = vec![String::from("cool_command")];
+    let flag_args = vec![String::from("-h")];
+    let option_args = vec![String::from("-j"), String::from("-i")];
+
+    let parsed_args = pargs::parse(actual_args, command_args, flag_args, option_args);
+
+    match parsed_args {
+        Ok(parsed_args) => println!("{:?}", parsed_args),
+        Err(parsed_args) => println!("{}", parsed_args),
+    }
+ }
+
+ ```
+
+ if we run this program with `cargo run cool_command -h -j=test123 -i=test456`,
+ the output will be `{"flag_args": ["-h"], "command_args": ["cool_command"], "option_args": ["-j", "test123", "-i", "test456"]}`
+*/
+
 use std::collections::HashMap;
 use std::io::{Error, ErrorKind};
 
 #[cfg(test)]
 mod tests;
-
 /// parses arguments in relation to expected optional and required arguments
 pub fn parse(
     actual_args: Vec<String>,
