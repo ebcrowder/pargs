@@ -1,7 +1,11 @@
-/*! pargs - command line argument parser
+/*!
+ pargs - command line argument parser
+
+ the design goal of pargs is to simply return parsed arguments
+ to a caller in a defined format for ease of lookup.
 
  pargs works with three common types of arguments:
- commands, flags and options
+ commands, flags and options.
 
  # Using pargs
  using pargs is very simple:
