@@ -8,10 +8,12 @@ fn parse_returns_result() {
         String::from("-h"),
         String::from("-i=peppers"),
         String::from("-j=mushrooms"),
+        String::from("-z"),
+        String::from("cheez"),
     ];
     let command_args = vec![String::from("pizza_command")];
     let flag_args = vec![String::from("-h")];
-    let option_args = vec![String::from("-i"), String::from("-j")];
+    let option_args = vec![String::from("-i"), String::from("-j"), String::from("-z")];
 
     let actual = parse(args, command_args, flag_args, option_args);
 
@@ -29,6 +31,8 @@ fn parse_returns_result() {
             "peppers".to_string(),
             "-j".to_string(),
             "mushrooms".to_string(),
+            "-z".to_string(),
+            "cheez".to_string(),
         ],
     );
 
