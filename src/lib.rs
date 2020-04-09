@@ -16,13 +16,13 @@
  interpret them.
 
  # Definitions
- `command_args` are defined as single arguments that do not have an assigned value
- `command_args` args should be entered without a dash
- `flag_args` are intended to be boolean values
- `flag_args` should not be assigned a value - if they exist, they are interpreted as `true`
- `option_args` should be assigned a value
- `option_args` should be denoted with a `-` character
- `option_args` can be assigned a value via `=` or space between arg and value
+ - `command_args` are defined as single arguments that do not have an assigned value
+ - `command_args` args should be entered without a dash
+ - `flag_args` are intended to be boolean values
+ - `flag_args` should not be assigned a value - if they exist, they are interpreted as `true`
+ - `option_args` should be assigned a value
+ - `option_args` should be denoted with a `-` character
+ - `option_args` can be assigned a value via `=` or space between arg and value
 
  # Example
 
