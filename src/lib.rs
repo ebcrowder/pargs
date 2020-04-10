@@ -11,7 +11,7 @@
  using pargs is very simple:
  define all three types of arguments that your program needs
  and pass them as individual `Vec<String>` to `pargs::parse()`.
- `parse()` will return a `HashMap` of the parsed arguments
+ `parse()` will return a `Matches` struct of the parsed arguments
   keyed by category so that your application can easily
  interpret them.
 
@@ -28,8 +28,7 @@
 
  The following example shows a simple program that defines all three types of arguments
  (commands, flag and option). Pargs is passed a `Vec<String>` from `env::args()`
- at which point it parses the arguments and returns them to the program in a `HashMap<String,
- Vec<String>>` data structure.
+ at which point it parses the arguments and returns them to the program in a simple data structure.
 
  ```
  use std::env;
@@ -52,22 +51,31 @@
 If we run this program with `cargo run cool_command -h -j=test123 -i=test456`,
  the output will be `{"flag_args": ["-h"], "command_args": ["cool_command"], "option_args": ["-j", "test123", "-i", "test456"]}`.
 
-From here, we can lookup the values using `HashMap`'s methods and utilize them in our program.
+From here, we can lookup the values and utilize them in our program.
 */
-
-use std::collections::HashMap;
 use std::io::{Error, ErrorKind};
-
 #[cfg(test)]
 mod tests;
+
+#[derive(Debug, PartialEq)]
+pub struct Matches {
+    command_args: Vec<String>,
+    flag_args: Vec<String>,
+    option_args: Vec<(String, String)>,
+}
+
 /// parses arguments in relation to expected optional and required arguments
 pub fn parse(
     actual_args: Vec<String>,
     command_args: Vec<String>,
     flag_args: Vec<String>,
     option_args: Vec<String>,
-) -> Result<HashMap<String, Vec<String>>, Error> {
-    let mut matches: HashMap<String, Vec<String>> = HashMap::new();
+) -> Result<Matches, Error> {
+    let mut matches = Matches {
+        command_args: Vec::new(),
+        flag_args: Vec::new(),
+        option_args: Vec::new(),
+    };
 
     // return Error if no required arguments are provided
     if actual_args.is_empty() {
@@ -98,37 +106,18 @@ pub fn parse(
             _ => str_vec[1].to_string(),
         };
 
-        // insert args into relative `HashMap` key
+        // insert args into relative Matches key
         if command_args.contains(&arg) {
-            matches
-                .entry("command_args".to_string())
-                .or_insert(Vec::new())
-                .push(arg.to_string())
+            matches.command_args.push(arg.to_string())
         } else if flag_args.contains(&arg) {
-            matches
-                .entry("flag_args".to_string())
-                .or_insert(Vec::new())
-                .push(arg.to_string())
+            matches.flag_args.push(arg.to_string())
         } else if option_args.contains(&split_key) {
-            matches
-                .entry("option_args".to_string())
-                .or_insert(Vec::new())
-                .push(split_key);
-
-            matches
-                .entry("option_args".to_string())
-                .or_insert(Vec::new())
-                .push(split_value);
+            matches.option_args.push((split_key, split_value));
         } else if option_args.contains(&arg) {
             // parse option args that use a ` ` into key value pairs
             matches
-                .entry("option_args".to_string())
-                .or_insert(Vec::new())
-                .push(arg.to_string());
-            matches
-                .entry("option_args".to_string())
-                .or_insert(Vec::new())
-                .push(actual_args_ref[i + 1].to_string());
+                .option_args
+                .push((arg.to_string(), actual_args_ref[i + 1].to_string()));
         }
     }
 
