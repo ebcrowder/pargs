@@ -60,9 +60,9 @@ mod tests;
 #[derive(Debug, PartialEq)]
 /// maintains args that are successfully parsed and returns them to the calling program
 pub struct Matches {
-    command_args: Vec<String>,
-    flag_args: Vec<String>,
-    option_args: Vec<(String, String)>,
+    pub command_args: Vec<String>,
+    pub flag_args: Vec<String>,
+    pub option_args: Vec<(String, String)>,
 }
 
 /// parses arguments in relation to expected optional and required arguments
