@@ -58,6 +58,7 @@ use std::io::{Error, ErrorKind};
 mod tests;
 
 #[derive(Debug, PartialEq)]
+/// maintains args that are successfully parsed and returns them to the calling program
 pub struct Matches {
     command_args: Vec<String>,
     flag_args: Vec<String>,
