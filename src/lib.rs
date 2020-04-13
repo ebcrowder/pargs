@@ -18,11 +18,14 @@
  # Definitions
  - `command_args` are defined as single arguments that do not have an assigned value
  - `command_args` args should be entered without a dash
+ - the return value of successfully parsed `command_args` is `Vec<String>`
  - `flag_args` are intended to be boolean values
  - `flag_args` should not be assigned a value - if they exist, they are interpreted as `true`
+ - the return value of successfully parsed `flag_args` is `Vec<String>`
  - `option_args` should be assigned a value
  - `option_args` should be denoted with a `-` character
  - `option_args` can be assigned a value via `=` or space between arg and value
+ - the return value of successfully parsed `option_args` is `HashMap`
 
  # Example
 
@@ -49,10 +52,11 @@
  ```
 
 If we run this program with `cargo run cool_command -h -j=test123 -i=test456`,
- the output will be `{"flag_args": ["-h"], "command_args": ["cool_command"], "option_args": ["-j", "test123", "-i", "test456"]}`.
+ the output will be `Matches { command_args: ["cool_command"], flag_args: ["-h"], option_args: {"-i": "test456", "-j": "test123"} }`.
 
 From here, we can lookup the values and utilize them in our program.
 */
+use std::collections::HashMap;
 use std::io::{Error, ErrorKind};
 #[cfg(test)]
 mod tests;
@@ -62,7 +66,7 @@ mod tests;
 pub struct Matches {
     pub command_args: Vec<String>,
     pub flag_args: Vec<String>,
-    pub option_args: Vec<(String, String)>,
+    pub option_args: HashMap<String, String>,
 }
 
 /// parses arguments in relation to expected optional and required arguments
@@ -75,7 +79,7 @@ pub fn parse(
     let mut matches = Matches {
         command_args: Vec::new(),
         flag_args: Vec::new(),
-        option_args: Vec::new(),
+        option_args: HashMap::new(),
     };
 
     // return Error if no required arguments are provided
@@ -113,12 +117,12 @@ pub fn parse(
         } else if flag_args.contains(&arg) {
             matches.flag_args.push(arg.to_string())
         } else if option_args.contains(&split_key) {
-            matches.option_args.push((split_key, split_value));
+            matches.option_args.insert(split_key, split_value);
         } else if option_args.contains(&arg) {
             // parse option args that use a ` ` into key value pairs
             matches
                 .option_args
-                .push((arg.to_string(), actual_args_ref[i + 1].to_string()));
+                .insert(arg.to_string(), actual_args_ref[i + 1].to_string());
         }
     }
 

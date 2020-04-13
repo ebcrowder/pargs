@@ -1,5 +1,6 @@
 use super::parse;
 use super::Matches;
+use std::collections::HashMap;
 
 #[test]
 fn parse_returns_result() {
@@ -20,21 +21,21 @@ fn parse_returns_result() {
     let mut expected = Matches {
         command_args: Vec::new(),
         flag_args: Vec::new(),
-        option_args: Vec::new(),
+        option_args: HashMap::new(),
     };
 
     expected.command_args.push("pizza_command".to_string());
     expected.flag_args.push("-h".to_string());
     expected
         .option_args
-        .push(("-i".to_string(), "peppers".to_string()));
+        .insert("-i".to_string(), "peppers".to_string());
 
     expected
         .option_args
-        .push(("-j".to_string(), "mushrooms".to_string()));
+        .insert("-j".to_string(), "mushrooms".to_string());
     expected
         .option_args
-        .push(("-z".to_string(), "cheez".to_string()));
+        .insert("-z".to_string(), "cheez".to_string());
 
     match actual {
         Ok(actual) => assert_eq!(actual, expected),
