@@ -15,17 +15,20 @@
   keyed by category so that your application can easily
  interpret them.
 
+ The return values of successfully parsed arguments are as follows:
+
+ - command_args: `Vec<String>`
+ - flag_args: `Vec<String>`
+ - option_args: `HashMap`
+
  # Definitions
  - `command_args` are defined as single arguments that do not have an assigned value
  - `command_args` args should be entered without a dash
- - the return value of successfully parsed `command_args` is `Vec<String>`
  - `flag_args` are intended to be boolean values
  - `flag_args` should not be assigned a value - if they exist, they are interpreted as `true`
- - the return value of successfully parsed `flag_args` is `Vec<String>`
  - `option_args` should be assigned a value
  - `option_args` should be denoted with a `-` character
  - `option_args` can be assigned a value via `=` or space between arg and value
- - the return value of successfully parsed `option_args` is `HashMap`
 
  # Example
 
