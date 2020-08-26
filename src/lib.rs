@@ -11,7 +11,7 @@
  using pargs is very simple:
  define all three types of arguments that your program needs
  and pass them as individual `Vec<String>` to `pargs::parse()`.
- `parse()` will return a `Matches` struct of the parsed arguments
+ `parse()` will return a `Pargs` struct of the parsed arguments
   keyed by category so that your application can easily
  interpret them.
 
@@ -37,7 +37,8 @@
  at which point it parses the arguments and returns them to the program in a simple data structure.
 
  ```
- use std::env;
+use std::env;
+use pargs::Pargs;
 
  fn main() {
     let actual_args: Vec<String> = env::args().collect();
@@ -45,7 +46,7 @@
     let flag_args = vec![String::from("-h")];
     let option_args = vec![String::from("-j"), String::from("-i")];
 
-    let parsed_args = pargs::parse(actual_args, command_args, flag_args, option_args);
+    let parsed_args = Pargs::parse(actual_args, command_args, flag_args, option_args);
 
     match parsed_args {
         Ok(parsed_args) => println!("{:?}", parsed_args),
@@ -55,7 +56,7 @@
  ```
 
 If we run this program with `cargo run cool_command -h -j=test123 -i=test456`,
- the output will be `Matches { command_args: ["cool_command"], flag_args: ["-h"], option_args: {"-i": "test456", "-j": "test123"} }`.
+ the output will be `Pargs { command_args: ["cool_command"], flag_args: ["-h"], option_args: {"-i": "test456", "-j": "test123"} }`.
 
 From here, we can lookup the values and utilize them in our program.
 */
@@ -66,68 +67,76 @@ mod tests;
 
 #[derive(Debug, PartialEq)]
 /// maintains args that are successfully parsed and returns them to the calling program
-pub struct Matches {
+pub struct Pargs {
     pub command_args: Vec<String>,
     pub flag_args: Vec<String>,
     pub option_args: HashMap<String, String>,
 }
 
-/// parses arguments in relation to expected optional and required arguments
-pub fn parse(
-    actual_args: Vec<String>,
-    command_args: Vec<String>,
-    flag_args: Vec<String>,
-    option_args: Vec<String>,
-) -> Result<Matches, Error> {
-    let mut matches = Matches {
-        command_args: Vec::new(),
-        flag_args: Vec::new(),
-        option_args: HashMap::new(),
-    };
-
-    // return Error if no required arguments are provided
-    if actual_args.is_empty() {
-        return Err(Error::new(
-            ErrorKind::InvalidInput,
-            "no arguments were provided.",
-        ));
-    }
-
-    // make a clone of actual_args vec for index lookup
-    let actual_args_ref = actual_args.clone();
-
-    // iterate over actual_args and match them with each arg category
-    for (i, arg) in actual_args.iter().enumerate() {
-        // parse option_args that use `=` into key value pairs
-        let str_vec: Vec<&str> = match arg.contains("=") {
-            true => arg.split("=").collect(),
-            false => vec![&arg],
-        };
-
-        let split_key: String = match str_vec.len() {
-            1 => "".to_string(),
-            _ => str_vec[0].to_string(),
-        };
-
-        let split_value: String = match str_vec.len() {
-            1 => "".to_string(),
-            _ => str_vec[1].to_string(),
-        };
-
-        // insert args into relative Matches key
-        if command_args.contains(&arg) {
-            matches.command_args.push(arg.to_string())
-        } else if flag_args.contains(&arg) {
-            matches.flag_args.push(arg.to_string())
-        } else if option_args.contains(&split_key) {
-            matches.option_args.insert(split_key, split_value);
-        } else if option_args.contains(&arg) {
-            // parse option args that use a ` ` into key value pairs
-            matches
-                .option_args
-                .insert(arg.to_string(), actual_args_ref[i + 1].to_string());
+impl Pargs {
+    /// creates new instance of Pargs struct
+    fn new() -> Pargs {
+        Pargs {
+            command_args: Vec::new(),
+            flag_args: Vec::new(),
+            option_args: HashMap::new(),
         }
     }
 
-    Ok(matches)
+    /// parses arguments in relation to expected optional and required arguments
+    pub fn parse(
+        actual_args: Vec<String>,
+        command_args: Vec<String>,
+        flag_args: Vec<String>,
+        option_args: Vec<String>,
+    ) -> Result<Pargs, Error> {
+        let mut matches = Pargs::new();
+
+        // return Error if no required arguments are provided
+        if actual_args.is_empty() {
+            return Err(Error::new(
+                ErrorKind::InvalidInput,
+                "no arguments were provided.",
+            ));
+        }
+
+        // iterate over actual_args and match them with each arg category
+        for (i, arg) in actual_args.iter().enumerate() {
+            // parse option_args that use `=` into key value pairs
+            let (split_key, split_value) = match arg.contains("=") {
+                true => {
+                    let str_vec: Vec<&str> = arg.split("=").collect();
+                    let split_key: String = match str_vec.len() {
+                        1 => "".to_string(),
+                        _ => str_vec[0].to_string(),
+                    };
+
+                    let split_value: String = match str_vec.len() {
+                        1 => "".to_string(),
+                        _ => str_vec[1].to_string(),
+                    };
+                    (split_key, split_value)
+                }
+                false => (String::from(""), String::from("")),
+            };
+
+            // insert args into relative Pargs key
+            if command_args.contains(&arg) {
+                matches.command_args.push(String::from(arg))
+            }
+            if flag_args.contains(&arg) {
+                matches.flag_args.push(String::from(arg))
+            }
+            if option_args.contains(&split_key) {
+                matches.option_args.insert(split_key, split_value);
+            }
+            if option_args.contains(&arg) {
+                matches
+                    .option_args
+                    .insert(String::from(arg), actual_args[i + 1].to_string());
+            }
+        }
+
+        Ok(matches)
+    }
 }

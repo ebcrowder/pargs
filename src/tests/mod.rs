@@ -1,5 +1,4 @@
-use super::parse;
-use super::Matches;
+use super::Pargs;
 use std::collections::HashMap;
 
 #[test]
@@ -16,26 +15,25 @@ fn parse_returns_result() {
     let flag_args = vec![String::from("-h")];
     let option_args = vec![String::from("-i"), String::from("-j"), String::from("-z")];
 
-    let actual = parse(args, command_args, flag_args, option_args);
+    let actual = Pargs::parse(args, command_args, flag_args, option_args);
 
-    let mut expected = Matches {
+    let mut expected = Pargs {
         command_args: Vec::new(),
         flag_args: Vec::new(),
         option_args: HashMap::new(),
     };
 
-    expected.command_args.push("pizza_command".to_string());
-    expected.flag_args.push("-h".to_string());
+    expected.command_args.push(String::from("pizza_command"));
+    expected.flag_args.push(String::from("-h"));
     expected
         .option_args
-        .insert("-i".to_string(), "peppers".to_string());
-
+        .insert(String::from("-i"), String::from("peppers"));
     expected
         .option_args
-        .insert("-j".to_string(), "mushrooms".to_string());
+        .insert(String::from("-j"), String::from("mushrooms"));
     expected
         .option_args
-        .insert("-z".to_string(), "cheez".to_string());
+        .insert(String::from("-z"), String::from("cheez"));
 
     match actual {
         Ok(actual) => assert_eq!(actual, expected),
@@ -50,10 +48,10 @@ fn parse_returns_error_if_reqd_args_not_defined() {
     let flag_args = vec![String::from("-h")];
     let option_args = vec![String::from("-i"), String::from("-j")];
 
-    let actual = parse(args, command_args, flag_args, option_args);
+    let actual = Pargs::parse(args, command_args, flag_args, option_args);
 
     match actual {
-        Err(_actual) => {}
+        Err(_e) => {}
         _ => panic!(),
     }
 }
