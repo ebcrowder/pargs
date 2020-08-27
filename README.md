@@ -47,19 +47,18 @@ at which point it parses the arguments and returns them to the program in a simp
 
 ```rust
 use std::env;
+use pargs::Pargs;
 
-fn main() {
-   let actual_args: Vec<String> = env::args().collect();
-   let command_args = vec![String::from("cool_command")];
-   let flag_args = vec![String::from("-h")];
-   let option_args = vec![String::from("-j"), String::from("-i")];
+let actual_args: Vec<String> = env::args().collect();
+let command_args = vec![String::from("cool_command")];
+let flag_args = vec![String::from("-h")];
+let option_args = vec![String::from("-j"), String::from("-i")];
 
-   let parsed_args = pargs::parse(actual_args, command_args, flag_args, option_args);
+let parsed_args = Pargs::parse(actual_args, command_args, flag_args, option_args);
 
-   match parsed_args {
-       Ok(parsed_args) => println!("{:?}", parsed_args),
-       Err(parsed_args) => println!("{}", parsed_args),
-   }
+match parsed_args {
+    Ok(parsed_args) => println!("{:?}", parsed_args),
+    Err(parsed_args) => println!("{}", parsed_args),
 }
 ```
 
