@@ -1,6 +1,6 @@
 [package]
 name = "pargs"
-version = "0.1.4"
+version = "0.2.0"
 authors = ["Eric Crowder <ebcrowder@gmail.com>"]
 edition = "2018"
 description = "command line argument parser"
