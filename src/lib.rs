@@ -104,15 +104,9 @@ impl Pargs {
             let (split_key, split_value) = match arg.contains('=') {
                 true => {
                     let str_vec: Vec<&str> = arg.split('=').collect();
-                    let split_key: String = match str_vec.len() {
-                        1 => "".to_string(),
-                        _ => str_vec[0].to_string(),
-                    };
+                    let split_key = String::from(str_vec[0]);
+                    let split_value = String::from(str_vec[1]);
 
-                    let split_value: String = match str_vec.len() {
-                        1 => "".to_string(),
-                        _ => str_vec[1].to_string(),
-                    };
                     (split_key, split_value)
                 }
                 false => (String::from(""), String::from("")),
