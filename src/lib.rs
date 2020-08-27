@@ -40,19 +40,17 @@
 use std::env;
 use pargs::Pargs;
 
- fn main() {
-    let actual_args: Vec<String> = env::args().collect();
-    let command_args = vec![String::from("cool_command")];
-    let flag_args = vec![String::from("-h")];
-    let option_args = vec![String::from("-j"), String::from("-i")];
+let actual_args: Vec<String> = env::args().collect();
+let command_args = vec![String::from("cool_command")];
+let flag_args = vec![String::from("-h")];
+let option_args = vec![String::from("-j"), String::from("-i")];
 
-    let parsed_args = Pargs::parse(actual_args, command_args, flag_args, option_args);
+let parsed_args = Pargs::parse(actual_args, command_args, flag_args, option_args);
 
-    match parsed_args {
-        Ok(parsed_args) => println!("{:?}", parsed_args),
-        Err(parsed_args) => println!("{}", parsed_args),
-    }
- }
+match parsed_args {
+    Ok(parsed_args) => println!("{:?}", parsed_args),
+    Err(parsed_args) => println!("{}", parsed_args),
+}
  ```
 
 If we run this program with `cargo run cool_command -h -j=test123 -i=test456`,
@@ -103,9 +101,9 @@ impl Pargs {
         // iterate over actual_args and match them with each arg category
         for (i, arg) in actual_args.iter().enumerate() {
             // parse option_args that use `=` into key value pairs
-            let (split_key, split_value) = match arg.contains("=") {
+            let (split_key, split_value) = match arg.contains('=') {
                 true => {
-                    let str_vec: Vec<&str> = arg.split("=").collect();
+                    let str_vec: Vec<&str> = arg.split('=').collect();
                     let split_key: String = match str_vec.len() {
                         1 => "".to_string(),
                         _ => str_vec[0].to_string(),
